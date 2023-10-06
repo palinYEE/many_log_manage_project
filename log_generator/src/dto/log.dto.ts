@@ -1,9 +1,10 @@
-import { Tlog } from '../app.interface';
+import { Ilog } from '../interface/app.interface';
+import { IUser } from '../interface/utils.interface';
 
 class LogDTO {
   log: string;
-  user: string;
-  constructor(data: Tlog) {
+  user: IUser;
+  constructor(data: Ilog) {
     this.log = data.log;
     this.user = data.user;
   }
