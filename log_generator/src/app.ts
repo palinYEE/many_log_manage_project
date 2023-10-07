@@ -1,8 +1,11 @@
 import express, { Express, Request, Response } from 'express';
+import bodyParser from 'body-parser';
 import apiRouters from './routers/api';
 
 const app: Express = express();
 const port = 3000;
+
+app.use(bodyParser.json());
 
 app.use('/log', apiRouters);
 
