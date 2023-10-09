@@ -87,4 +87,31 @@ describe('root route /log API TEST', () => {
       expect(res.body.errors[0].path).toBe('email');
     });
   });
+
+  describe('POST /start: 스케줄을 시작 정상 동작 확인.', () => {
+    test('스케줄 시작에 성공한다.', async () => {
+      const res = await request('http://localhost:3000', {}).post('/log/start');
+      expect(res.statusCode).toBe(200);
+    });
+    // 또 한번 더 시작 스케줄 진행 시 에러 반환
+    test('이미 스케줄이 동작 중인 경우 에러 반환 확인', async () => {
+      const res = await request('http://localhost:3000', {}).post('/log/start');
+      expect(res.statusCode).toBe(400);
+      expect(res.body.errorMessage).toEqual('이미 스케줄이 동작 중입니다.');
+    });
+  });
+
+  describe('POST /stop: 스케줄을 종료 정상 동작 확인.', () => {
+    test('스케줄 종료에 성공한다.', async () => {
+      const res = await request('http://localhost:3000', {}).post('/log/stop');
+      expect(res.statusCode).toBe(200);
+    });
+    test('이미 스케줄이 동작 중이 아닌 경우 에러 반환 확인', async () => {
+      const res = await request('http://localhost:3000', {}).post('/log/stop');
+      expect(res.statusCode).toBe(400);
+      expect(res.body.errorMessage).toEqual(
+        '이미 스케줄이 동작 중이 아닙니다.',
+      );
+    });
+  });
 });

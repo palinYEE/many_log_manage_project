@@ -9,6 +9,7 @@ import {
 } from './utils';
 import { IUser } from './interface/utils.interface';
 import { Ilog } from './interface/app.interface';
+import { config } from './config/app.config';
 
 const app: Express = express();
 const port = 3000;
@@ -39,6 +40,9 @@ app.listen(port, async () => {
     `             - mysql port            : ${process.env.MYSQL_PORT}`,
   );
   console.debug(
+    `             - schedule status       : ${config.schedule_flag}`,
+  );
+  console.debug(
     `==============================================================================`,
   );
   await rabbitmq.connnectMQ();
@@ -53,13 +57,15 @@ app.listen(port, async () => {
 });
 
 cron.schedule('* * * * * *', async () => {
-  const randomUser: IUser = generateRandomUser();
-  const randomLogString = generateRandomLog();
-  const randomData: Ilog = {
-    log: randomLogString,
-    user: randomUser,
-  };
-  await rabbitmq.publish(randomData);
+  if (config.schedule_flag) {
+    const randomUser: IUser = generateRandomUser();
+    const randomLogString = generateRandomLog();
+    const randomData: Ilog = {
+      log: randomLogString,
+      user: randomUser,
+    };
+    await rabbitmq.publish(randomData);
+  }
 });
 
 module.exports = app;
