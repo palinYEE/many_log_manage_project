@@ -1,3 +1,4 @@
+import { Ilog } from '../../src/interface/app.interface';
 import { IUser } from '../../src/interface/utils.interface';
 import {
   generateRandomLog,
@@ -43,6 +44,38 @@ describe('Rabbitmq 관련 유틸 테스트', () => {
       await successMQClass.createChannel();
       expect(successMQClass.channel).not.toEqual(null);
     });
+    test('Rabbitmq exchange 생성 확인', async () => {
+      await successMQClass.createExchange('test_exchange', 'direct');
+      expect(successMQClass.exchange).not.toEqual(null);
+    });
+    test('Rabbitmq 큐 생성 확인', async () => {
+      await successMQClass.createQueue('test_queue');
+      expect(successMQClass.queue).not.toEqual(null);
+    });
+    test('Rabbitmq 생성한 테스트 exchange, 테스트 큐를 정상적으로 바인딩 하는지 확인', async () => {
+      let errorMessage: string = '';
+      try {
+        await successMQClass.bindingQueue('test_routingkey');
+      } catch (error) {
+        errorMessage = (error as Error).message;
+      }
+      expect(errorMessage).toEqual('');
+    });
+    test('Rabbitmq 데이터 전송 테스트', async () => {
+      const testUser: IUser = generateRandomUser();
+      const testLogData = generateRandomLog();
+      const testData: Ilog = {
+        log: testLogData,
+        user: testUser,
+      };
+      let errorMessage: string = '';
+      try {
+        await successMQClass.publish(testData);
+      } catch (error) {
+        errorMessage = (error as Error).message;
+      }
+      expect(errorMessage).toEqual('');
+    });
     test('Rabbitmq 연결 해제 확인', async () => {
       await successMQClass.closeMQ();
       expect(successMQClass.connection).toEqual(null);
@@ -64,6 +97,33 @@ describe('Rabbitmq 관련 유틸 테스트', () => {
       let errorMessage: string = '';
       try {
         await failMQClass.createChannel();
+      } catch (error) {
+        errorMessage = (error as Error).message;
+      }
+      expect(errorMessage).not.toEqual('');
+    });
+    test('Rabbitmq 채널이 없는 상태에서 exchange 생성 시 에러 반환 확인', async () => {
+      let errorMessage: string = '';
+      try {
+        await failMQClass.createExchange('test_exchange', 'direct');
+      } catch (error) {
+        errorMessage = (error as Error).message;
+      }
+      expect(errorMessage).not.toEqual('');
+    });
+    test('Rabbitmq 채널이 없는 상태에서 큐 생성 시 에러 반환 확인', async () => {
+      let errorMessage: string = '';
+      try {
+        await failMQClass.createQueue('test_queue');
+      } catch (error) {
+        errorMessage = (error as Error).message;
+      }
+      expect(errorMessage).not.toEqual('');
+    });
+    test('Rabbitmq 채널, 큐, exchange가 없는 상태에서 binding 시도 시 에러 반환 확인', async () => {
+      let errorMessage: string = '';
+      try {
+        await failMQClass.bindingQueue('test_routingkey');
       } catch (error) {
         errorMessage = (error as Error).message;
       }

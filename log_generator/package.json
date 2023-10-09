@@ -23,6 +23,7 @@
     "@types/express": "^4.17.18",
     "@types/jest": "^29.5.5",
     "@types/node": "^20.8.2",
+    "@types/node-cron": "^3.0.9",
     "@types/supertest": "^2.0.14",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
@@ -42,6 +43,7 @@
     "body-parser": "^1.20.2",
     "express": "^4.18.2",
     "express-validator": "^7.0.1",
-    "http-status-codes": "^2.3.0"
+    "http-status-codes": "^2.3.0",
+    "node-cron": "^3.0.2"
   }
 }
