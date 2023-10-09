@@ -26,6 +26,28 @@ services:
       - MYSQL_PASSWORD=sample
       # vhost 란? 각 유저마다 격리된 환경을 제공하는 기능. 
       # - RABBITMQ_VHOST=
+  log_consumer:
+    container_name: 'log_consumer'
+    image: node:18
+    command: 
+    ports: 
+      - 3333:3333
+    working_dir: /app
+    volumes:
+      - ./log_consumer:/app
+    environment:
+      - TZ=Asia/Seoul
+      - NODE_ENV=development
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_ID=admin
+      - RABBITMQ_PASSWORD=admin
+      - RABBITMQ_PORT=5672
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=8080
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=log
+      - MYSQL_USER=sample
+      - MYSQL_PASSWORD=sample
   db:
     container_name: 'mysql'
     image: mysql:latest
