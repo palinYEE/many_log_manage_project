@@ -11,8 +11,8 @@ import {
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @MessagePattern('notifications')
-  getNotifications(@Payload() data: number[], @Ctx() context: RmqContext) {
-    console.log(`Pattern: ${context.getPattern()}, data: ${data}`);
+  @MessagePattern()
+  getNotifications(@Payload() data: any) {
+    console.log(`data: ${JSON.stringify(data)}`);
   }
 }
