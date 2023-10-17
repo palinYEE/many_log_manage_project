@@ -64,7 +64,9 @@ cron.schedule('* * * * * *', async () => {
       log: randomLogString,
       user: randomUser,
     };
-    await rabbitmq.publish(randomData);
+    await rabbitmq.publish(randomData, 'big_log_test');
+    await rabbitmq.publish(randomData, 'big_log_test_2');
+    await rabbitmq.publish(randomData, 'big_log_test_3');
   }
 });
 

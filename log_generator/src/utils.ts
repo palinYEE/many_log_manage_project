@@ -1,7 +1,7 @@
 import { Faker, ko } from '@faker-js/faker';
 import { IUser } from './interface/utils.interface';
 import amqp from 'amqplib';
-import { Ilog } from './interface/app.interface';
+import { ISendLog, Ilog } from './interface/app.interface';
 
 const koFaker = new Faker({
   locale: [ko],
@@ -135,7 +135,11 @@ export class rabbitmqHandlerClass {
     }
   }
 
-  async publish(data: Ilog, option: Record<string, string | number> = {}) {
+  async publish(
+    data: Ilog,
+    pattern: string,
+    option: Record<string, string | number> = {},
+  ) {
     if (
       this.connection !== null &&
       this.channel !== null &&
@@ -143,10 +147,14 @@ export class rabbitmqHandlerClass {
       this.exchange !== null &&
       this.routingKey !== null
     ) {
+      const sendData: ISendLog = {
+        pattern: pattern,
+        data: data,
+      };
       const resultFlag = this.channel.publish(
         this.exchangeName!,
         this.routingKey,
-        Buffer.from(JSON.stringify(data)),
+        Buffer.from(JSON.stringify(sendData)),
         option,
       );
       if (resultFlag) {

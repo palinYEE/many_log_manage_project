@@ -5,4 +5,9 @@ export interface Ilog {
   user: IUser;
 }
 
+export interface ISendLog {
+  pattern: string;
+  data: Ilog;
+}
+
 export type TCustomLog = { log: string } & IUser;
