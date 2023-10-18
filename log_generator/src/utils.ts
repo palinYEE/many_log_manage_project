@@ -1,11 +1,14 @@
-import { Faker, ko } from '@faker-js/faker';
-import { IUser } from './interface/utils.interface';
+// import { Faker, ko } from '@faker-js/faker';
+import { IUserAction } from './interface/utils.interface';
 import amqp from 'amqplib';
 import { ISendLog, Ilog } from './interface/app.interface';
+import { USER_DATA_SET } from './data/user.data';
+import { PAGE } from './data/page.data';
+import { USER_ACTION } from './data/user_action.data';
 
-const koFaker = new Faker({
-  locale: [ko],
-});
+// const koFaker = new Faker({
+//   locale: [ko],
+// });
 
 type TRabbitmqExchangeType = 'direct' | 'fanout' | 'topic' | 'headers';
 
@@ -22,12 +25,18 @@ export function generateRandomLog() {
  * 랜덤 유저 정보를 생성해 주는 함수
  * @returns "{name: string, email: string}" 형식의 데이터를 반환
  */
-export function generateRandomUser(): IUser {
-  const userName = koFaker.person.fullName();
-  const userEmail = koFaker.internet.email();
+export function generateRandomUser(): IUserAction {
+  const userName =
+    USER_DATA_SET[Math.floor(Math.random() * USER_DATA_SET.length)];
+  const visitPage = PAGE[Math.floor(Math.random() * PAGE.length)];
+  const userAction =
+    USER_ACTION[Math.floor(Math.random() * USER_ACTION.length)];
+  const actionTime = new Date().toISOString();
   return {
     name: userName,
-    email: userEmail,
+    page: visitPage,
+    action: userAction,
+    time: actionTime,
   };
 }
 
@@ -159,6 +168,7 @@ export class rabbitmqHandlerClass {
       );
       if (resultFlag) {
         console.debug(`Rabbitmq 데이터 전송 완료`);
+        console.debug(`   - pattern: ${pattern}`);
         console.debug(`   - exhange: ${this.exchangeName}`);
         console.debug(`   - routingKey: ${this.routingKey}`);
         console.debug(`   - data: ${JSON.stringify(data)}`);

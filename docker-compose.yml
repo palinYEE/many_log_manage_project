@@ -26,6 +26,10 @@ services:
       - MYSQL_PASSWORD=sample
       # vhost 란? 각 유저마다 격리된 환경을 제공하는 기능. 
       # - RABBITMQ_VHOST=
+    restart: unless-stopped  
+    depends_on:
+      - db
+      - mq
   # log_consumer:
   #   container_name: 'log_consumer'
   #   image: node:18

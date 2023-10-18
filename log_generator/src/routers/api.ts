@@ -2,9 +2,7 @@ import express, { Request, Response } from 'express';
 import * as utils from '../utils';
 import { StatusCodes } from 'http-status-codes';
 import { body } from 'express-validator';
-import { TCustomLog } from '../interface/app.interface';
 import { validatorErrorChecker } from '../middlewares/validators';
-import { IUser } from '../interface/utils.interface';
 import { config } from '../config/app.config';
 
 const router = express.Router();
@@ -34,9 +32,9 @@ router.post(
   ],
   (req: Request, res: Response) => {
     try {
-      const userData = req.body as TCustomLog;
+      const userData = req.body;
       console.debug(`유저 입력 데이터: ${JSON.stringify(userData)}`);
-      const data: { log: string; user: IUser } = {
+      const data: { log: string; user: unknown } = {
         log: userData.log,
         user: {
           name: userData.name,

@@ -1,8 +1,8 @@
-import { IUser } from './utils.interface';
+import { IUserAction } from './utils.interface';
 
 export interface Ilog {
   log: string;
-  user: IUser;
+  user: IUserAction;
 }
 
 export interface ISendLog {
@@ -10,4 +10,4 @@ export interface ISendLog {
   data: Ilog;
 }
 
-export type TCustomLog = { log: string } & IUser;
+export type TCustomLog = { log: string } & IUserAction;

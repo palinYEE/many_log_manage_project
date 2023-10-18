@@ -7,7 +7,7 @@ import {
   generateRandomUser,
   rabbitmqHandlerClass,
 } from './utils';
-import { IUser } from './interface/utils.interface';
+import { IUserAction } from './interface/utils.interface';
 import { Ilog } from './interface/app.interface';
 import { config } from './config/app.config';
 
@@ -58,7 +58,7 @@ app.listen(port, async () => {
 
 cron.schedule('* * * * * *', async () => {
   if (config.schedule_flag) {
-    const randomUser: IUser = generateRandomUser();
+    const randomUser: IUserAction = generateRandomUser();
     const randomLogString = generateRandomLog();
     const randomData: Ilog = {
       log: randomLogString,
