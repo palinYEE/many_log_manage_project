@@ -34,12 +34,6 @@ app.listen(port, async () => {
     `             - rabbitmq port         : ${process.env.RABBITMQ_PORT}`,
   );
   console.debug(
-    `             - mysql host            : ${process.env.MYSQL_HOST}`,
-  );
-  console.debug(
-    `             - mysql port            : ${process.env.MYSQL_PORT}`,
-  );
-  console.debug(
     `             - schedule status       : ${config.schedule_flag}`,
   );
   console.debug(

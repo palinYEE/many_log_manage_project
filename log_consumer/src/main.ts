@@ -36,6 +36,38 @@ async function bootstrap() {
   });
   // 등록한 마이크로 서비스 실행 부분
   await app.startAllMicroservices();
+  console.debug(`[server]: Server is running at <https://localhost>:3333`);
+  console.debug(`[server]: process info`);
+  console.debug(`             - TimeZone               : ${process.env.TZ}`);
+  console.debug(
+    `             - mysql host             : ${
+      process.env.MYSQL_HOST ? process.env.MYSQL_HOST : 'localhost'
+    }`,
+  );
+  console.debug(
+    `             - mysql port             : ${
+      process.env.MYSQL_PORT ? Number(process.env.MYSQL_PORT) : 8080
+    }`,
+  );
+  console.debug(
+    `             - mysql username         : ${
+      process.env.MYSQL_USERNAME ? process.env.MTSQL_USERNAME : 'root'
+    }`,
+  );
+  console.debug(
+    `             - mysql password         : ${
+      process.env.MYSQL_PASSWORD ? process.env.MYSQL_PASSWORD : 'root'
+    }`,
+  );
+  console.debug(
+    `             - mysql database         : ${
+      process.env.MYSQL_DATABASE ? process.env.MYSQL_DATABASE : 'log'
+    }`,
+  );
+  console.debug(
+    `==============================================================================`,
+  );
+  // TypeORM 정보 확인
   // port listen 부분
   await app.listen(3333);
 }
