@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, HttpException, HttpStatus } from '@nestjs/common';
 import { AppService } from './app.service';
 import {
   Ctx,
@@ -6,16 +6,19 @@ import {
   Payload,
   RmqContext,
 } from '@nestjs/microservices';
+import { IUserAction } from './app.interface';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @MessagePattern('big_log_test')
-  getNotifications(@Payload() data: any, @Ctx() context: RmqContext) {
-    console.log(
-      `Pattern: ${context.getPattern()} data: ${JSON.stringify(data)}`,
-    );
+  getBigLogSave(@Payload() data: any, @Ctx() context: RmqContext) {
+    try {
+      this.appService.saveLogData(data['user'] as IUserAction);
+    } catch (error) {
+      throw new HttpException((error as Error).message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @MessagePattern('big_log_test_2')
