@@ -36,6 +36,7 @@ app.listen(port, async () => {
   console.debug(
     `             - schedule status       : ${config.schedule_flag}`,
   );
+  console.debug(`             - Batch log generation  : ${config.batch_count}`);
   console.debug(
     `==============================================================================`,
   );
@@ -52,15 +53,15 @@ app.listen(port, async () => {
 
 cron.schedule('* * * * * *', async () => {
   if (config.schedule_flag) {
-    const randomUser: IUserAction = generateRandomUser();
-    const randomLogString = generateRandomLog();
-    const randomData: Ilog = {
-      log: randomLogString,
-      user: randomUser,
-    };
-    await rabbitmq.publish(randomData, 'big_log_test');
-    await rabbitmq.publish(randomData, 'big_log_test_2');
-    await rabbitmq.publish(randomData, 'big_log_test_3');
+    for (let i = 0; i < config.batch_count; i++) {
+      const randomUser: IUserAction = generateRandomUser();
+      const randomLogString = generateRandomLog();
+      const randomData: Ilog = {
+        log: randomLogString,
+        user: randomUser,
+      };
+      await rabbitmq.publish(randomData, 'big_log_test');
+    }
   }
 });
 
