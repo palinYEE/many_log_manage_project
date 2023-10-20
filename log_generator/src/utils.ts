@@ -173,7 +173,20 @@ export class rabbitmqHandlerClass {
         console.debug(`   - routingKey: ${this.routingKey}`);
         console.debug(`   - data: ${JSON.stringify(data)}`);
       } else {
-        console.debug(`Rabbit 전송 실패`);
+        console.debug(
+          `Rabbit 전송 실패 ==> drain 이벤트를 발생시킵니다. ${JSON.stringify(
+            sendData,
+          )}`,
+        );
+        this.channel.once('drain', () => {
+          console.debug(`데이터 재전송 ==> ${JSON.stringify(sendData)}`);
+          this.channel!.publish(
+            this.exchangeName!,
+            this.routingKey!,
+            Buffer.from(JSON.stringify(sendData)),
+            option,
+          );
+        });
       }
     } else {
       const errorMessages: string[] = [];
