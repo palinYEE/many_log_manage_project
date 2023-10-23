@@ -7,6 +7,7 @@ import { UserEntity } from './entities/user.entity';
 export class AppService {
   constructor(private userRepository: UserRepository) {}
 
+  private dataPool: UserEntity[] = [];
   private logger = new Logger(AppService.name);
 
   getHello(): string {
@@ -20,10 +21,26 @@ export class AppService {
       userData.page = data.page;
       userData.action = data.action;
       userData.time = new Date(data.time);
-      this.userRepository.save(userData);
-      this.logger.debug(`user sample data save: ${JSON.stringify(data)}`);
+      // this.userRepository.save(userData);
+      this.dataPool.push(userData);
+      // this.logger.debug(
+      //   `user sample data list append: ${JSON.stringify(data)}`,
+      // );
     } catch (error) {
       this.logger.error(`save error: ${error}`);
+      throw error;
+    }
+  }
+
+  async saveBuildData() {
+    try {
+      const tmp = this.dataPool;
+      this.dataPool = [];
+      if (tmp) {
+        await this.userRepository.insert(tmp);
+      }
+      this.logger.debug(`SUCCESS save bulk data: ${tmp.length}`);
+    } catch (error) {
       throw error;
     }
   }

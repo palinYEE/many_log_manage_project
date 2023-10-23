@@ -1,4 +1,4 @@
-import { Controller, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { AppService } from './app.service';
 import {
   Ctx,
@@ -7,31 +7,30 @@ import {
   RmqContext,
 } from '@nestjs/microservices';
 import { IUserAction } from './app.interface';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  private logger = new Logger(AppController.name);
+
   @MessagePattern('big_log_test')
-  getBigLogSave(@Payload() data: any, @Ctx() context: RmqContext) {
+  async getBigLogSave(@Payload() data: any, @Ctx() context: RmqContext) {
     try {
-      this.appService.saveLogData(data['user'] as IUserAction);
+      await this.appService.saveLogData(data['user'] as IUserAction);
     } catch (error) {
       throw new HttpException((error as Error).message, HttpStatus.BAD_REQUEST);
     }
   }
 
-  @MessagePattern('big_log_test_2')
-  getBigLogTest2(@Payload() data: any, @Ctx() context: RmqContext) {
-    console.log(
-      `Pattern: ${context.getPattern()} data: ${JSON.stringify(data)}`,
-    );
-  }
-
-  @MessagePattern('big_log_test_3')
-  getBigLogTest3(@Payload() data: any, @Ctx() context: RmqContext) {
-    console.log(
-      `Pattern: ${context.getPattern()} data: ${JSON.stringify(data)}`,
-    );
+  @Cron(CronExpression.EVERY_SECOND)
+  async bulkData() {
+    try {
+      console.debug(`[SCHEDULE] START Insert Bulk Data`);
+      await this.appService.saveBuildData();
+    } catch (error) {
+      this.logger.error(error);
+    }
   }
 }
