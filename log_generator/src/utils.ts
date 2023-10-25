@@ -182,13 +182,13 @@ export class rabbitmqHandlerClass {
         );
       } else {
         console.debug(
-          `Rabbit 전송 실패 ==> drain 이벤트를 발생시킵니다. ${JSON.stringify(
-            sendData,
-          )}`,
+          `Rabbit 전송 실패 ==> drain 이벤트를 발생시킵니다. sendDataCount/drainDataCount: ${this.sendDataCount}/${this.drainDataCount}`,
         );
         this.drainDataCount += 1;
         this.channel.once('drain', () => {
-          console.debug(` drain 데이터 재전송 ==> ${JSON.stringify(sendData)}`);
+          console.debug(
+            ` drain 데이터 재전송 ==> sendDataCount/drainDataCount: ${this.sendDataCount}/${this.drainDataCount}`,
+          );
           this.channel!.publish(
             this.exchangeName!,
             this.routingKey!,
@@ -196,6 +196,7 @@ export class rabbitmqHandlerClass {
             option,
           );
           this.drainDataCount -= 1;
+          this.sendDataCount += 1;
         });
       }
     } else {
