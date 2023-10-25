@@ -172,10 +172,10 @@ export class rabbitmqHandlerClass {
       );
       if (resultFlag) {
         console.debug(`Rabbitmq 데이터 전송 완료`);
-        console.debug(`   - pattern: ${pattern}`);
-        console.debug(`   - exhange: ${this.exchangeName}`);
-        console.debug(`   - routingKey: ${this.routingKey}`);
-        console.debug(`   - data: ${JSON.stringify(data)}`);
+        // console.debug(`   - pattern: ${pattern}`);
+        // console.debug(`   - exhange: ${this.exchangeName}`);
+        // console.debug(`   - routingKey: ${this.routingKey}`);
+        // console.debug(`   - data: ${JSON.stringify(data)}`);
         this.sendDataCount += 1;
         console.log(
           `     - sendDataCount/drainDataCount: ${this.sendDataCount}/${this.drainDataCount}`,
