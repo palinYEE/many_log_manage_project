@@ -52,8 +52,8 @@ export class rabbitmqHandlerClass {
   public exchange: amqp.Replies.AssertExchange | null;
   private exchangeName: string | null;
   private routingKey: string | null;
-  private sendDataCount: number;
-  private drainDataCount: number;
+  public sendDataCount: number;
+  public drainDataCount: number;
 
   constructor() {
     this.mqId = process.env.RABBITMQ_ID as string;
@@ -171,24 +171,24 @@ export class rabbitmqHandlerClass {
         option,
       );
       if (resultFlag) {
-        console.debug(`Rabbitmq 데이터 전송 완료`);
+        // console.debug(`Rabbitmq 데이터 전송 완료`);
         // console.debug(`   - pattern: ${pattern}`);
         // console.debug(`   - exhange: ${this.exchangeName}`);
         // console.debug(`   - routingKey: ${this.routingKey}`);
         // console.debug(`   - data: ${JSON.stringify(data)}`);
         this.sendDataCount += 1;
-        console.log(
-          `     - sendDataCount/drainDataCount: ${this.sendDataCount}/${this.drainDataCount}`,
-        );
+        // console.log(
+        //   `     - sendDataCount/drainDataCount: ${this.sendDataCount}/${this.drainDataCount}`,
+        // );
       } else {
-        console.debug(
-          `Rabbit 전송 실패 ==> drain 이벤트를 발생시킵니다. sendDataCount/drainDataCount: ${this.sendDataCount}/${this.drainDataCount}`,
-        );
+        // console.debug(
+        //   `Rabbit 전송 실패 ==> drain 이벤트를 발생시킵니다. sendDataCount/drainDataCount: ${this.sendDataCount}/${this.drainDataCount}`,
+        // );
         this.drainDataCount += 1;
         this.channel.once('drain', () => {
-          console.debug(
-            ` drain 데이터 재전송 ==> sendDataCount/drainDataCount: ${this.sendDataCount}/${this.drainDataCount}`,
-          );
+          // console.debug(
+          //   ` drain 데이터 재전송 ==> sendDataCount/drainDataCount: ${this.sendDataCount}/${this.drainDataCount}`,
+          // );
           this.channel!.publish(
             this.exchangeName!,
             this.routingKey!,

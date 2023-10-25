@@ -65,4 +65,10 @@ cron.schedule('* * * * * *', async () => {
   }
 });
 
+setInterval(() => {
+  console.log(
+    `전송 현황 (전송 성공/전송 실패): ${rabbitmq.sendDataCount}/${rabbitmq.drainDataCount}`,
+  );
+}, 2000);
+
 module.exports = app;
