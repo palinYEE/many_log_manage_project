@@ -152,6 +152,8 @@ export class rabbitmqHandlerClass {
 
   async rePublish() {
     try {
+      // 이와 같이 작성 되어있으면 1초에 하나의 데이터만 다시 넣는다.
+      // rePublish 를 멀티 프로세스 또는 멀티 스레드로 병렬로 작업할 수 있는지 조사가 필요해 보임.
       const data = this.resendQueue.shift();
       // console.log(data);
       if (
