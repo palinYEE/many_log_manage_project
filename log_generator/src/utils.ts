@@ -54,6 +54,7 @@ export class rabbitmqHandlerClass {
   private routingKey: string | null;
   public sendDataCount: number;
   public drainDataCount: number;
+  public resendQueue: unknown[];
 
   constructor() {
     this.mqId = process.env.RABBITMQ_ID as string;
@@ -69,6 +70,7 @@ export class rabbitmqHandlerClass {
     this.routingKey = null;
     this.sendDataCount = 0;
     this.drainDataCount = 0;
+    this.resendQueue = [];
   }
 
   async connnectMQ() {
@@ -148,6 +150,35 @@ export class rabbitmqHandlerClass {
     }
   }
 
+  async rePublish() {
+    try {
+      const data = this.resendQueue.shift();
+      // console.log(data);
+      if (
+        this.connection !== null &&
+        this.channel !== null &&
+        this.queue !== null &&
+        this.exchange !== null &&
+        this.exchangeName !== null &&
+        this.routingKey !== null &&
+        data !== undefined
+      ) {
+        const resendResult = await this.channel.publish(
+          this.exchangeName,
+          this.routingKey,
+          Buffer.from(JSON.stringify(data)),
+        );
+        if (resendResult) {
+          this.drainDataCount -= 1;
+        } else {
+          this.resendQueue.push(data);
+        }
+      }
+    } catch (error) {
+      console.error((error as Error).message);
+    }
+  }
+
   async publish(
     data: Ilog,
     pattern: string,
@@ -189,13 +220,14 @@ export class rabbitmqHandlerClass {
           // console.debug(
           //   ` drain 데이터 재전송 ==> sendDataCount/drainDataCount: ${this.sendDataCount}/${this.drainDataCount}`,
           // );
-          this.channel!.publish(
-            this.exchangeName!,
-            this.routingKey!,
-            Buffer.from(JSON.stringify(sendData)),
-            option,
-          );
-          this.drainDataCount -= 1;
+          // this.channel!.publish(
+          //   this.exchangeName!,
+          //   this.routingKey!,
+          //   Buffer.from(JSON.stringify(sendData)),
+          //   option,
+          // );
+          // this.drainDataCount -= 1;
+          this.resendQueue.push(sendData);
           this.sendDataCount += 1;
         });
       }
