@@ -69,6 +69,26 @@ router.post('/change/batch_count', (req: Request, res: Response) => {
   }
 });
 
+router.post('/change/rebatch_count', (req: Request, res: Response) => {
+  try {
+    const batchQuery = req.query;
+    config.rebatch_count = Number(batchQuery.count);
+    console.debug(
+      `재배치 카운트틀 ${config.rebatch_count}으로 변경되었습니다.`,
+    );
+    res.send('success');
+  } catch (error) {
+    console.error(
+      `재배치 카운드를 변경하는데 실패하였습니다. - ${
+        (error as Error).message
+      }`,
+    );
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ errorMessage: '재배치 카운트를 변경하는데 실패하였습니다.' });
+  }
+});
+
 router.post('/start', (req: Request, res: Response) => {
   try {
     if (config.schedule_flag) {

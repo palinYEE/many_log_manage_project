@@ -66,7 +66,12 @@ cron.schedule('* * * * * *', async () => {
 });
 
 cron.schedule('* * * * * *', async () => {
-  await rabbitmq.rePublish();
+  const promiseList: Promise<void>[] = [];
+  console.log(`[*] Fail Send Data Count: ${rabbitmq.resendQueue.length}`);
+  for (let i = 0; i < config.rebatch_count; i++) {
+    promiseList.push(rabbitmq.rePublish());
+  }
+  await Promise.all(promiseList);
 });
 
 setInterval(() => {
