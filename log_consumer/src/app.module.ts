@@ -20,7 +20,7 @@ import { ScheduleModule } from '@nestjs/schedule';
       database: process.env.MYSQL_DATABASE ? process.env.MYSQL_DATABASE : 'log',
       entities: [__dirname + '/**/**/entities/*.{ts,js}'],
       synchronize: true,
-      logging: true,
+      logging: false,
     }),
     ScheduleModule.forRoot(),
   ],

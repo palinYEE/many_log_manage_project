@@ -1,4 +1,11 @@
-import { Controller, HttpException, HttpStatus, Logger } from '@nestjs/common';
+import {
+  Controller,
+  HttpException,
+  HttpStatus,
+  Logger,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { AppService } from './app.service';
 import {
   Ctx,
@@ -32,5 +39,14 @@ export class AppController {
     } catch (error) {
       this.logger.error(error);
     }
+  }
+
+  @Post('/change/batch_size')
+  changeBatchCount(@Query('count') count: number) {
+    this.appService.batchSize = count;
+    this.logger.debug(`change batch size: ${count}`);
+    return {
+      message: 'change success',
+    };
   }
 }

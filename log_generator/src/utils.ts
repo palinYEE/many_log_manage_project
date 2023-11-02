@@ -158,9 +158,9 @@ export class rabbitmqHandlerClass {
       // 이와 같이 작성 되어있으면 1초에 하나의 데이터만 다시 넣는다.
       const release = await mutex.acquire();
       const data = this.resendQueue.shift(); // mutex lock
-      if (data) {
-        console.log(`[*] mutex lock - ${JSON.stringify(data)}`);
-      }
+      // if (data) {
+      //   console.log(`[*] mutex lock - ${JSON.stringify(data)}`);
+      // }
       release(); // mutex unlock
 
       // console.log(data);
