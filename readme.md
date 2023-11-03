@@ -24,3 +24,5 @@
 # 트러블 슈팅 정리
 
 * [버퍼가 꽉차는 에러](https://alwns28.tistory.com/3)
+* [JavaScript heap out of memory 에러](https://alwns28.tistory.com/4)
+* [MaxListenersExceededWarning](https://alwns28.tistory.com/5)
